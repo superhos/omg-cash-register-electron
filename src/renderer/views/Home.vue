@@ -85,7 +85,7 @@ body {
   position: relative;
 
   .el-main {
-    padding: 0 20px;
+    padding: 0 0 0 20px;
     display: flex;
     flex-direction: column;
     height: 100vh;

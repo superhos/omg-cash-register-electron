@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "author": "SevensChan <297495165@qq.com>",
   "description": "OMG Cash Register System",
-  "license": null,
+  "repository": "https://github.com/superhos/omg-cash-register-electron",
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
