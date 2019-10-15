@@ -19,20 +19,24 @@
       </el-aside>
       <el-main style="min-height: 625px; width: 50vw;">
         <Holding />
+        <div class="version">當前版本號: {{version}}</div>
         <PriceDisplay />
         <Keyboard />
+        <ToolBar />
       </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
+import { version } from '../../../package.json'
 import BarCode from '@/components/barcode.vue';
 import CartList from '@/components/cart-list.vue';
 import PriceDisplay from '@/components/price-display.vue';
 import Keyboard from '@/components/keyboard.vue';
 import Login from '@/components/login.vue';
 import Holding from '@/components/holding.vue';
+import ToolBar from '@/components/tool-bar.vue';
 import { mapState } from 'vuex';
 import moment from 'moment';
 // @ is an alias to /src
@@ -45,10 +49,12 @@ export default {
     Keyboard,
     Login,
     Holding,
+    ToolBar
   },
   data() {
     return {
       currentTime: '',
+      version
     };
   },
   computed: mapState({
@@ -81,11 +87,22 @@ body {
   background: #fbfbfb;
 }
 
+.version {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 5px 10px;
+    color: #909090;
+    font-size: 15px;
+    -webkit-app-region: drag;
+}
+
 .home {
   position: relative;
 
   .el-main {
-    padding: 0 0 0 20px;
+    padding: 0;
+    border-left: 2px solid #FFF;
     display: flex;
     flex-direction: column;
     height: 100vh;

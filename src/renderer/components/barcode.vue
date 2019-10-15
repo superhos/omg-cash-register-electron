@@ -16,7 +16,7 @@
       </svg>
     </div>
     <div class="show-code">
-      <input ref="code" type="text" clearable v-model="cur_code" v-focus>
+      <input ref="code" readonly type="text" clearable v-model="cur_code" v-focus>
     </div>
     <div class="vcenter">
       <el-button type="default" @click="clear" data-layout="numeric">清空</el-button>
@@ -36,6 +36,7 @@
 
 <script>
 import { storageGet } from "../../utils/storageHelper";
+const { ipcRenderer } = require('electron')
 
 export default {
   name: "barcode",
@@ -78,20 +79,30 @@ export default {
         zIndex: 9,
         width: "220px",
         height: "280px"
-      }
+      },
+      localProductList: []
     };
   },
-  mounted() {
-    window.addEventListener("keyup", this.foo);
+  created () {
+    window.removeEventListener("keyup", this.foo, false);
+    window.addEventListener("keyup", this.foo, false);
   },
-  computed: {
-    async localProductList() {
-      const list = await storageGet("PRODUCT_LIST");
-      return list;
-    }
+  async mounted () {
+    this.localProductList = await storageGet("PRODUCT_LIST")
+    // APP掃碼槍
+    ipcRenderer.on('SCAN_CODE', (event, data) => {
+      console.log('recevie:', data)
+        this.cur_code = data.code
+        setTimeout(() => {
+          this.handleKeyDown({key: 'Enter'})
+        })
+    })
   },
   beforeDestroy() {
-    window.removeEventListener("keyup", this.foo);
+    window.removeEventListener("keyup", this.foo, false);
+  },
+  destroyed(){
+    window.removeEventListener('keyup',this.foo,false)
   },
   methods: {
     clear () {
@@ -140,11 +151,14 @@ export default {
             position: "top-center",
             duration: 2000
           });
+          this.cur_code = ''
         } else {
           this.$store.dispatch("addProduct", prod);
           this.cur_code = "";
           this.$refs.code.focus();
         }
+      } else {
+        this.cur_code += evt.key
       }
     },
     async findProduct() {
@@ -161,8 +175,12 @@ export default {
     },
     findFromLocal() {
       console.log(this.localProductList);
+        console.log('this.cur_code: ', this.cur_code);
       const res = this.localProductList.find(
-        e => e.get("bar_code") === this.cur_code
+        e => {
+          console.log(e.bar_code)
+          return e.bar_code === this.cur_code.trim()
+        }
       );
       console.log(res);
       return res;

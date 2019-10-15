@@ -186,5 +186,21 @@ export default {
     }
   }
 }
+
+.cart-list::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 0;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+
+.cart-list::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(224, 224, 224, 0.2);
+    background: #e9e9e9;
+}
+.cart-list::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    box-shadow: inset 0 0 5px rgba(252, 252, 252, 0.2);
+    border-radius: 10px;
+    background: #EDEDED;
+}
 </style>
 

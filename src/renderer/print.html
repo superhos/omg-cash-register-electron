@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/> 
+        <title>小票打印</title>
+        <style type="text/css">
+        @page {
+            margin: 0;
+        }
+
+        *{padding:0;margin: 0;}
+
+        body{
+            padding-top: 88mm;
+            width: 48mm;
+        }
+        h1{text-align:center;font-size: 20px;width: 48mm;font-weight:700;}
+        h2{text-align:center;font-size: 14px;font-weight:300;width: 48mm;}
+        h4{text-align:center;font-size: 13px;font-weight:100;width: 48mm;margin-bottom:2mm;}
+        hr.top {
+            width: 48mm;
+            height: 0.5mm;
+            border-bottom: 0.5mm solid #000;
+        }
+        hr {
+            width: 48mm;
+            height: 0;
+            margin: 2mm 0;
+            border-bottom: 0.1mm dashed #000;
+        }
+        h3{font-size: 16px;width: 48mm;}
+        .left{
+            float: left;
+        }
+        .right{
+            float:right;
+        }
+        .clearfix{
+            clear: both;
+        }
+        ul{list-style: none;}
+        .print_container{
+            padding: 0;
+            width: 21mm;
+        }
+
+        .section {
+            width: 48mm;
+            font-size: 13px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .section label {
+            width: 35%;
+            min-width: 35%;
+            max-width: 35%;
+            flex: 1;
+        }
+        .section span {
+            width: 65%;
+            min-width: 65%;
+            max-width: 65%;
+            flex: 2;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            width: 48mm;
+            font-size: 13px;
+        }
+
+        ul li {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        ul li label {
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            flex: 2;
+        }
+
+        ul li span {
+            width: 50%;
+            min-width: 50%;
+            max-width: 50%;
+            flex: 1;
+        }
+
+        ul.ad {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        </style>
+    </head>
+    <body style="background-color:#fff;">
+        <div class="print_container">
+            <!-- <h1>OMG MART</h1>
+            <h2>您的社區生活管家</h2> -->
+            <img src="assets/logo.jpg" style="width:42mm"/>
+            <!-- <h4>www.omgmart.store</h4> -->
+            <hr class="top"/>
+            <div class="section">
+                <!-- <label>單號</label>
+                <span>23423523</span> -->
+                <label>時間</label>
+                <span>2019-08-10 14:55:31</span>
+                <label>收銀員</label>
+                <span>PfwbHEAvii</span>
+            </div>
+            <hr />
+            <ul class="list">
+                <li><label>維他 黑加侖子 250ML</label><span>数量: 1 * 4.5</span><span>金额: 4.50</span></li>
+                <!-- <li>
+                    <label>可口可樂 膠樽 500我超級長啊啊啊啊啊啊啊啊</label>
+                    <span>數量: 1 * 7.0</span>
+                    <span>金額: 7.0</span>
+                </li> -->
+            </ul>
+            <hr />
+            <div class="section">
+                <label>合計:</label>
+                <span style="text-align: right">MOP 4.5</span>
+                <label>支付方式:</label>
+                <span style="text-align: right">Mpay</span>
+            </div>
+            <hr class="top"/>
+            <ul class="ad">
+                <li>便利店</li>
+                <li>進口商品</li>
+                <li>快遞代收</li>
+            </ul>
+            <h4 style="margin:0;margin-top:2mm;">澳門氹仔海灣圍56號</h4><h4 style="margin:0">海灣花園地下B座</h4>
+        </div>
+    </body>
+</html>

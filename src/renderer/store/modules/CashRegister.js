@@ -1,6 +1,9 @@
 import moment from 'moment'
-import config from '../../../config/config'
+import { getConfig } from '../../../config/config'
 import Vue from 'vue'
+
+let config
+getConfig().then((conf) => config = conf)
 
 String.prototype.change = function (index, target) {
   if (index >= this.length) return this.toString() + target
@@ -15,15 +18,7 @@ const state = {
   cartList: [{
     id: +new Date(),
     time: moment(new Date()).format('HH:mm'),
-    list: [{
-      id: 1,
-      bar_code: '12987122',
-      title: 'vita柠檬茶',
-      size: '500',
-      unit: 'mg',
-      price: 3,
-      count: 2,
-    }],
+    list: [],
   }],
   income: 0,
   redemption: (0).toFixed(2),
@@ -40,18 +35,21 @@ const mutations = {
     state.currentOrder = key;
   },
   addProduct(state, product) {
-    let prod = state.cartList[state.currentOrder].list.find(e => e.id === product.id);
+    let prod = state.cartList[state.currentOrder].list.find(e => e.bar_code === product.bar_code);
     if (!prod) {
       prod = {
-        id: product.id,
-        bar_code: product.get('bar_code'),
-        title: product.get('title'),
-        size: product.get('size'),
-        unit: product.get('unit'),
-        price: +product.get('price'),
+        id: product.id || product.ObjectId,
+        bar_code: product.bar_code || product.get('bar_code'),
+        title: product.title || product.get('title'),
+        size: product.size || product.get('size'),
+        unit: product.unit || product.get('unit'),
+        price: +product.price || +product.get('price'),
         count: 1,
       };
-      state.cartList[state.currentOrder].list.push(prod);
+      state.cartList[state.currentOrder].list = [
+        prod,
+        ...state.cartList[state.currentOrder].list
+      ]
     } else {
       prod.count++;
     }
@@ -65,6 +63,7 @@ const mutations = {
     state.cartList[state.currentOrder].list.splice(idx, 1);
   },
   incomeGet(state, payload) {
+    console.log(payload)
     state.income = payload.income;
     state.mopMode = payload.mopMode;
     const amount = state.cartList[state.currentOrder].list.reduce((red, cur) => red + (cur.count * cur.price), 0);
@@ -128,7 +127,7 @@ const actions = {
   triggerMode({ commit }, mode) {
     commit('triggerMode', mode);
   },
-  checkout({ dispatch, commit, state }) {
+  checkout({ dispatch, commit, state }, payload) {
     // 發送相應訂單信息到服務端
     fetch(config.ORDER_SERVICE_URL, {
       method: 'POST',
@@ -141,7 +140,8 @@ const actions = {
           id: e.id,
           count: e.count,
         })),
-        chain: 'Ukp5oRXzL6',
+        pay_type: payload.pay_type || 'cash',
+        chain: payload.chain,
       }),
     }).then(res => res.json())
       .then((res) => {
@@ -155,6 +155,7 @@ const actions = {
         commit('cancelOrder');
         dispatch('triggerNotify', false);
         dispatch('triggerMode', 0);
+        if (payload.callback) payload.callback()
       });
     // 調用打印機打印單
   },
@@ -192,6 +193,19 @@ const actions = {
       mopMode,
     });
   },
+  incomeSet({ commit }, income) {
+    const mopMode = 0
+    console.log(income)
+    console.log({
+      income,
+      mopMode,
+    })
+    commit('incomeGet', {
+      income,
+      mopMode,
+    });
+    
+  }
 };
 
 export default {

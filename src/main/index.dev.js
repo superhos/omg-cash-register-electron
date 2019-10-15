@@ -9,7 +9,7 @@
 
 // Install `electron-debug` with `devtron`
 require('electron-debug')({ showDevTools: true })
-require('update-electron-app')()
+// require('update-electron-app')()
 // Install `vue-devtools`
 require('electron').app.on('ready', () => {
   let installExtension = require('electron-devtools-installer')

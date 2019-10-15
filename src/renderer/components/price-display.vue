@@ -28,6 +28,10 @@
 
 <script>
 import { mapState } from 'vuex';
+// const SerialPort = require("serialport").SerialPort;
+// const serialPort = new SerialPort("COM2", {
+//   baudrate: 115200
+// });
 
 export default {
   name: 'PriceDisplay',
@@ -36,10 +40,27 @@ export default {
     redemption: state => state.CashRegister.redemption,
     amount: state => state.CashRegister.cartList[state.CashRegister.currentOrder].list.reduce((red, cur) => red + (cur.count * cur.price), 0),
   }),
+  watch: {
+    // income (newval) {
+      // setInterval(function(){
+      //   writeAndDrain(newval,callbackFun)
+      // },1000);
+    // }
+  },
   data() {
     return {
     };
   },
+  methods: {
+    // writeAndDrain: (data) => {
+    //     serialPort.write(data, function () {
+    //       serialPort.drain(callback);
+    //     });
+    // },
+    // callbackFun: () => {
+    //   console.log('callback')
+    // }
+  }
 };
 </script>
 
@@ -54,7 +75,7 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: #1c9aa0;
+    background: $main-color;
     color: #fff;
     box-sizing: border-box;
 

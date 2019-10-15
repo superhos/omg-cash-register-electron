@@ -1,17 +1,26 @@
 import Parse from 'parse/node'
 import { storageSet } from '../../../utils/storageHelper'
-import config from '../../../config/config'
+import { getConfig } from '../../../config/config'
 
-Parse.initialize(config.PARSE_KEY);
-Parse.serverURL = config.PARSE_SERVER
+let config
+getConfig().then((conf) => {
+    config = conf
+    Parse.initialize(config.PARSE_KEY);
+    Parse.serverURL = config.PARSE_SERVER
+})
+
 
 const state = {
-    productCount: 0
+    productCount: 0,
+    localProductList: []
 }
 
 const mutations = {
     updateCount (state, count) { 
         state.productCount = count
+    },
+    updateLocalProductList (state, list) {
+        state.localProductList = list
     }
 }
 
@@ -20,12 +29,12 @@ const actions = {
         console.log('try me')
         commit('updateCount', count)
     },
-    async updateProductList({ commit }) {
-        const Product = Parse.Object.extend('Product');
-        const query = new Parse.Query(Product);
-        const res = await query.find();
-        await storageSet('PRODUCT_LIST', res)
-        console.log(res)
+    async updateProductList({ commit }, res) {
+        // const Product = Parse.Object.extend('Product');
+        // const query = new Parse.Query(Product);
+        // const res = await query.find();
+        // await storageSet('PRODUCT_LIST', res)
+        commit('updateLocalProductList', res)
     },
 }
 

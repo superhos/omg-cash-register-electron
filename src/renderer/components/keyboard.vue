@@ -10,7 +10,7 @@
           <td>2</td>
           <td>3</td>
           <td style="font-size: 15px;">50</td>
-          <td @click="cancelOrder">取消訂單</td>
+          <td @click="cancelOrder">銷單</td>
         </tr>
         <tr>
           <td>4</td>
@@ -24,7 +24,7 @@
           <td>8</td>
           <td>9</td>
           <td style="font-size: 15px;">500</td>
-          <td></td>
+          <td>足數</td>
         </tr>
         <tr>
           <td>0</td>
@@ -47,6 +47,7 @@
 <script>
 import PayNotify from '@/components/pay-notify.vue';
 import { mapState } from 'vuex';
+import { ipcRenderer } from 'electron';
 export default {
   name: 'Keyboard',
   components: {
@@ -56,6 +57,7 @@ export default {
     income: state => state.CashRegister.income,
     showNotify: state => state.CashRegister.showNotify,
     currentMode: state => state.CashRegister.currentMode,
+    amountProduct: state => state.CashRegister.cartList[state.CashRegister.currentOrder].list.length,
     isLogin: state => state.CashRegister.user && state.CashRegister.user.attributes.sessionToken,
     amount: state => state.CashRegister.cartList[state.CashRegister.currentOrder].list.reduce((red, cur) => red + (cur.count * cur.price), 0),
   }),
@@ -75,8 +77,23 @@ export default {
     keyClick(evt) {
       if (evt.target && evt.target.tagName === 'TD') {
         if (evt.target.textContent !== '結算') {
-          this.$store.dispatch('incomeGet', evt.target.textContent);
+          if (evt.target.textContent === '足數') {
+            // ipcRenderer.send('printContent', {content:'hahhahahahahahah'})
+            this.$store.dispatch('incomeSet', this.amount)
+          } else {
+            this.$store.dispatch('incomeGet', evt.target.textContent);
+          }
         } else {
+          if (+this.amountProduct === 0) {
+            this.$toasted.show('沒有需要結賬的商品', {
+              theme: 'outline',
+              icon: 'close',
+              className: 'toast',
+              position: 'top-center',
+              duration: 3000,
+            });
+            return
+          }
           if (+this.income === 0) {
             this.$toasted.show('請錄入實收金額！', {
               theme: 'outline',
@@ -84,8 +101,8 @@ export default {
               className: 'toast',
               position: 'top-center',
               duration: 5000,
-            });
-            return;
+            })
+            return
           }
           if (+this.income < +this.amount) {
             this.$toasted.show('支付金額不足', {
@@ -94,10 +111,10 @@ export default {
               className: 'toast',
               position: 'top-center',
               duration: 3000,
-            });
-            return;
+            })
+            return
           }
-          this.$store.dispatch('triggerNotify', true);
+          this.$store.dispatch('triggerNotify', true)
         }
       }
     },
@@ -143,6 +160,15 @@ export default {
         if (this.currentMode === 0) {
           this.$store.dispatch('triggerMode', 1);
         }
+        if (+this.amountProduct === 0) {
+          this.$toasted.show('沒有需要結賬的商品', {
+            theme: 'outline',
+            icon: 'close',
+            className: 'toast',
+            position: 'top-center',
+            duration: 3000,
+          });
+        }
         if (+this.income === 0) {
           this.$toasted.show('請錄入實收金額！', {
             theme: 'outline',
@@ -180,6 +206,7 @@ export default {
     border-top: 0;
     display: flex;
     position: relative;
+    flex: 2;
 
   .order-action {
     width: 27%;
@@ -236,7 +263,7 @@ export default {
       }
 
       td:last-child {
-        width: 100px;
+        width: 60px;
         font-size: 20px;
         flex:2;
       }
